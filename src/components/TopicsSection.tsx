@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, Landmark, Sword, Flag, BookOpen, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Topic {
   icon: React.ElementType;
@@ -75,7 +76,7 @@ const TopicsSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer group">
+              <Link to="/artikel" className="block bg-card border border-border rounded-lg p-6 h-full hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer group">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                   <topic.icon className="w-6 h-6 text-primary" />
                 </div>
@@ -88,7 +89,7 @@ const TopicsSection = () => {
                 <p className="text-primary font-body text-xs mt-4 font-medium">
                   {topic.articles} Artikel →
                 </p>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>
