@@ -16,7 +16,7 @@ const Navbar = () => {
 
   const links = [
     { name: "Beranda", path: "/" },
-    { name: "Linimasa", path: "" },
+    { name: "Linimasa", path: "/#linimasa" },
     { name: "Materi", path: "/artikel" },
     { name: "Tentang", path: "/tentang" },
   ];
