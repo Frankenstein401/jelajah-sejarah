@@ -127,6 +127,8 @@ const events: TimelineEvent[] = [
       "28 Oktober diperingati sebagai Hari Sumpah Pemuda",
     ],
     figures: ["Muhammad Yamin", "Sugondo Djojopuspito", "WR Soepratman (pencipta Indonesia Raya)"],
+    image: sumpahpemudaImg,
+    imageCaption: "Kongres Pemuda II, 1928",
   },
   {
     year: "1945",
