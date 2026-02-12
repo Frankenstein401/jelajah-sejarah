@@ -38,6 +38,8 @@ const events: TimelineEvent[] = [
       "Raja Mulawarman dikenal dermawan dengan persembahan 20.000 ekor sapi",
     ],
     figures: ["Raja Kudungga", "Raja Aswawarman", "Raja Mulawarman"],
+    image: kutaiImg,
+    imageCaption: "Prasasti Yupa, Kalimantan Timur",
   },
   {
     year: "Abad ke-7",
