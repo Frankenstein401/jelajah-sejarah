@@ -314,8 +314,15 @@ const TimelineItem = ({
         initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
         animate={isInView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"}`}
+        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"} relative`}
       >
+        {/* Floating polaroid photo */}
+        <TimelinePhoto
+          image={event.image}
+          caption={event.imageCaption}
+          isLeft={isLeft}
+        />
+
         <motion.div
           whileHover={{ scale: 1.03, y: -6 }}
           whileTap={{ scale: 0.98 }}
