@@ -97,6 +97,8 @@ const events: TimelineEvent[] = [
       "Masjid Agung Demak menjadi simbol kekuatan Islam di Jawa",
     ],
     figures: ["Raden Patah", "Sultan Baab Ullah", "Wali Songo"],
+    image: kesultananImg,
+    imageCaption: "Penyebaran Islam di Nusantara",
   },
   {
     year: "1908",
