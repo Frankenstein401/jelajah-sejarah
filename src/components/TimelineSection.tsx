@@ -82,6 +82,8 @@ const events: TimelineEvent[] = [
       "Kitab Nagarakretagama mencatat kejayaan wilayah kekuasaan",
     ],
     figures: ["Raden Wijaya", "Hayam Wuruk", "Mahapatih Gajah Mada", "Tribhuwana Tunggadewi"],
+    image: majapahitImg,
+    imageCaption: "Mahapatih Gajah Mada",
   },
   {
     year: "Abad ke-15",
