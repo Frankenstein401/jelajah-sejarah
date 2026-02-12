@@ -2,6 +2,16 @@ import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { X, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import TimelinePhoto from "./timeline/TimelinePhoto";
+
+import kutaiImg from "@/assets/timeline/kutai.jpg";
+import sriwijayaImg from "@/assets/timeline/sriwijaya.jpg";
+import borobudurImg from "@/assets/timeline/borobudur.jpg";
+import majapahitImg from "@/assets/timeline/majapahit.jpg";
+import kesultananImg from "@/assets/timeline/kesultanan.jpg";
+import kebangkitanImg from "@/assets/timeline/kebangkitan.jpg";
+import sumpahpemudaImg from "@/assets/timeline/sumpahpemuda.jpg";
+import proklamasiImg from "@/assets/timeline/proklamasi.jpg";
 
 interface TimelineEvent {
   year: string;
@@ -11,6 +21,8 @@ interface TimelineEvent {
   detail: string;
   significance: string[];
   figures?: string[];
+  image: string;
+  imageCaption: string;
 }
 
 const events: TimelineEvent[] = [
@@ -26,6 +38,8 @@ const events: TimelineEvent[] = [
       "Raja Mulawarman dikenal dermawan dengan persembahan 20.000 ekor sapi",
     ],
     figures: ["Raja Kudungga", "Raja Aswawarman", "Raja Mulawarman"],
+    image: kutaiImg,
+    imageCaption: "Prasasti Yupa, Kalimantan Timur",
   },
   {
     year: "Abad ke-7",
@@ -39,6 +53,8 @@ const events: TimelineEvent[] = [
       "Menguasai jalur pelayaran Selat Malaka selama berabad-abad",
     ],
     figures: ["Raja Dapunta Hyang Sri Jayanasa", "Balaputradewa", "I-Tsing (pendeta Cina yang mencatat perjalanannya)"],
+    image: sriwijayaImg,
+    imageCaption: "Armada Laut Sriwijaya",
   },
   {
     year: "Abad ke-8",
@@ -51,6 +67,8 @@ const events: TimelineEvent[] = [
       "Situs Warisan Dunia UNESCO sejak 1991",
       "Menggambarkan perjalanan menuju pencerahan dalam 10 tingkat",
     ],
+    image: borobudurImg,
+    imageCaption: "Candi Borobudur saat fajar",
   },
   {
     year: "1293",
@@ -64,6 +82,8 @@ const events: TimelineEvent[] = [
       "Kitab Nagarakretagama mencatat kejayaan wilayah kekuasaan",
     ],
     figures: ["Raden Wijaya", "Hayam Wuruk", "Mahapatih Gajah Mada", "Tribhuwana Tunggadewi"],
+    image: majapahitImg,
+    imageCaption: "Mahapatih Gajah Mada",
   },
   {
     year: "Abad ke-15",
@@ -77,6 +97,8 @@ const events: TimelineEvent[] = [
       "Masjid Agung Demak menjadi simbol kekuatan Islam di Jawa",
     ],
     figures: ["Raden Patah", "Sultan Baab Ullah", "Wali Songo"],
+    image: kesultananImg,
+    imageCaption: "Penyebaran Islam di Nusantara",
   },
   {
     year: "1908",
@@ -90,6 +112,8 @@ const events: TimelineEvent[] = [
       "20 Mei diperingati sebagai Hari Kebangkitan Nasional",
     ],
     figures: ["dr. Wahidin Soedirohoesodo", "dr. Soetomo", "dr. Cipto Mangunkusumo"],
+    image: kebangkitanImg,
+    imageCaption: "Rapat Budi Utomo, 1908",
   },
   {
     year: "1928",
@@ -103,6 +127,8 @@ const events: TimelineEvent[] = [
       "28 Oktober diperingati sebagai Hari Sumpah Pemuda",
     ],
     figures: ["Muhammad Yamin", "Sugondo Djojopuspito", "WR Soepratman (pencipta Indonesia Raya)"],
+    image: sumpahpemudaImg,
+    imageCaption: "Kongres Pemuda II, 1928",
   },
   {
     year: "1945",
@@ -116,6 +142,8 @@ const events: TimelineEvent[] = [
       "17 Agustus diperingati sebagai Hari Kemerdekaan Indonesia",
     ],
     figures: ["Ir. Soekarno", "Drs. Mohammad Hatta", "Fatmawati (penjahit bendera)"],
+    image: proklamasiImg,
+    imageCaption: "Proklamasi Kemerdekaan, 1945",
   },
 ];
 
@@ -286,8 +314,15 @@ const TimelineItem = ({
         initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
         animate={isInView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"}`}
+        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"} relative`}
       >
+        {/* Floating polaroid photo */}
+        <TimelinePhoto
+          image={event.image}
+          caption={event.imageCaption}
+          isLeft={isLeft}
+        />
+
         <motion.div
           whileHover={{ scale: 1.03, y: -6 }}
           whileTap={{ scale: 0.98 }}
