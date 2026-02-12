@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, Clock, ChevronRight, ImageOff } from "lucide-react";
 import { useState } from "react";
 import { getArticleBySlug, getRelatedArticles } from "@/data/articles";
+import { getQuizBySlug } from "@/data/quizzes";
+import ArticleQuiz from "@/components/ArticleQuiz";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import BackToTop from "@/components/BackToTop";
 import FunFactToast from "@/components/FunFactToast";
