@@ -67,6 +67,8 @@ const events: TimelineEvent[] = [
       "Situs Warisan Dunia UNESCO sejak 1991",
       "Menggambarkan perjalanan menuju pencerahan dalam 10 tingkat",
     ],
+    image: borobudurImg,
+    imageCaption: "Candi Borobudur saat fajar",
   },
   {
     year: "1293",
