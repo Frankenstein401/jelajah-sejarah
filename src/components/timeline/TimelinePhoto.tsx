@@ -22,14 +22,10 @@ const TimelinePhoto = ({ image, caption, isLeft }: TimelinePhotoProps) => {
         whileTap={{ scale: 0.95 }}
         transition={{ duration: 0.5, delay: 0.3 }}
         onClick={() => setExpanded(true)}
-        className={`absolute z-20 cursor-pointer ${
-          isLeft
-            ? "-right-4 -top-6 md:-right-10 md:-top-8 rotate-3"
-            : "-left-4 -top-6 md:-left-10 md:-top-8 -rotate-3"
-        }`}
+        className="relative z-20 cursor-pointer inline-block"
       >
         <div className="bg-card border border-border rounded-sm p-1.5 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-primary/10 transition-shadow duration-300">
-          <div className="w-16 h-20 md:w-20 md:h-24 overflow-hidden rounded-[2px]">
+          <div className="w-28 h-36 md:w-36 md:h-44 overflow-hidden rounded-[2px]">
             <img
               src={image}
               alt={caption}
@@ -37,17 +33,13 @@ const TimelinePhoto = ({ image, caption, isLeft }: TimelinePhotoProps) => {
               loading="lazy"
             />
           </div>
-          <p className="text-[8px] md:text-[9px] text-muted-foreground font-body text-center mt-1 max-w-[64px] md:max-w-[80px] truncate">
+          <p className="text-[9px] md:text-[10px] text-muted-foreground font-body text-center mt-1 max-w-[112px] md:max-w-[144px] truncate">
             {caption}
           </p>
         </div>
 
         {/* Tape effect */}
-        <div
-          className={`absolute -top-2 ${
-            isLeft ? "left-1/2 -translate-x-1/2" : "left-1/2 -translate-x-1/2"
-          } w-8 h-3 bg-primary/20 rounded-sm rotate-[-2deg]`}
-        />
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 bg-primary/20 rounded-sm rotate-[-2deg]" />
       </motion.div>
 
       {/* Expanded lightbox */}

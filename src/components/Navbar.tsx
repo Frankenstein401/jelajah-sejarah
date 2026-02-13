@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Menu, X } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -14,9 +15,29 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleNavClick = useCallback((path: string) => {
+    setMobileOpen(false);
+    if (path.includes("#")) {
+      const [basePath, hash] = path.split("#");
+      if (location.pathname === basePath || (basePath === "/" && location.pathname === "/")) {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+          return;
+        }
+      }
+      navigate(basePath);
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, [location.pathname, navigate]);
+
   const links = [
     { name: "Beranda", path: "/" },
     { name: "Linimasa", path: "/#linimasa" },
+    { name: "Peta", path: "/#peta" },
     { name: "Materi", path: "/artikel" },
     { name: "Tentang", path: "/tentang" },
   ];
@@ -41,29 +62,44 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`font-body text-sm transition-colors relative group ${
-                scrolled
-                  ? "text-muted-foreground hover:text-foreground"
-                  : "text-parchment/70 hover:text-parchment"
-              } ${location.pathname === link.path ? "text-primary font-semibold" : ""}`}
-            >
-              {link.name}
-              {/* Active indicator */}
-              {location.pathname === link.path && (
-                <motion.div
-                  layoutId="navbar-indicator"
-                  className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-              {/* Hover underline */}
-              <span className={`absolute -bottom-1 left-0 right-0 h-0.5 ${scrolled ? "bg-foreground" : "bg-parchment"} scale-x-0 group-hover:scale-x-100 transition-transform origin-left`} />
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isHash = link.path.includes("#");
+            const isActive = link.path === location.pathname || (link.path === "/" && location.pathname === "/");
+            return isHash ? (
+              <button
+                key={link.name}
+                onClick={() => handleNavClick(link.path)}
+                className={`font-body text-sm transition-colors relative group ${
+                  scrolled
+                    ? "text-muted-foreground hover:text-foreground"
+                    : "text-parchment/70 hover:text-parchment"
+                }`}
+              >
+                {link.name}
+                <span className={`absolute -bottom-1 left-0 right-0 h-0.5 ${scrolled ? "bg-foreground" : "bg-parchment"} scale-x-0 group-hover:scale-x-100 transition-transform origin-left`} />
+              </button>
+            ) : (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`font-body text-sm transition-colors relative group ${
+                  scrolled
+                    ? "text-muted-foreground hover:text-foreground"
+                    : "text-parchment/70 hover:text-parchment"
+                } ${isActive ? "text-primary font-semibold" : ""}`}
+              >
+                {link.name}
+                {isActive && (
+                  <motion.div
+                    layoutId="navbar-indicator"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+                <span className={`absolute -bottom-1 left-0 right-0 h-0.5 ${scrolled ? "bg-foreground" : "bg-parchment"} scale-x-0 group-hover:scale-x-100 transition-transform origin-left`} />
+              </Link>
+            );
+          })}
         </div>
 
         <button
@@ -86,20 +122,31 @@ const Navbar = () => {
           className="md:hidden bg-background/95 backdrop-blur-md border-b border-border"
         >
           <div className="px-6 py-4 flex flex-col gap-3">
-            {links.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`font-body text-sm hover:text-foreground py-2 transition-colors ${
-                  location.pathname === link.path 
-                    ? "text-primary font-semibold" 
-                    : "text-muted-foreground"
-                }`}
-                onClick={() => setMobileOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const isHash = link.path.includes("#");
+              return isHash ? (
+                <button
+                  key={link.name}
+                  onClick={() => handleNavClick(link.path)}
+                  className="font-body text-sm text-muted-foreground hover:text-foreground py-2 transition-colors text-left"
+                >
+                  {link.name}
+                </button>
+              ) : (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`font-body text-sm hover:text-foreground py-2 transition-colors ${
+                    location.pathname === link.path
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground"
+                  }`}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
         </motion.div>
       )}
