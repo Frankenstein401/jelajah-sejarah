@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle2, XCircle, RotateCcw, Trophy, BookOpen, ArrowRight, Brain } from "lucide-react";
 import type { Quiz } from "@/data/quizzes";
@@ -15,6 +15,16 @@ const ArticleQuiz = ({ quiz, articleTitle }: ArticleQuizProps) => {
   const [confirmed, setConfirmed] = useState(false);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(quiz.questions.length).fill(null));
   const [finished, setFinished] = useState(false);
+
+  // Reset quiz state when quiz (article) changes
+  useEffect(() => {
+    setStarted(false);
+    setCurrent(0);
+    setSelected(null);
+    setConfirmed(false);
+    setAnswers(Array(quiz.questions.length).fill(null));
+    setFinished(false);
+  }, [quiz]);
 
   const q = quiz.questions[current];
   const isCorrect = selected === q.correctIndex;
