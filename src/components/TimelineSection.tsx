@@ -308,20 +308,20 @@ const TimelineItem = ({
   return (
     <div
       ref={ref}
-      className={`flex items-center w-full mb-12 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} flex-col md:gap-8`}
+      className={`flex items-start w-full mb-12 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} flex-col md:gap-8`}
     >
       <motion.div
         initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
         animate={isInView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"}`}
+        className={`w-full md:w-5/12 ${isLeft ? "md:text-right" : "md:text-left"} px-2 md:px-0`}
       >
         <motion.div
           whileHover={{ scale: 1.03, y: -6 }}
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
           onClick={onClick}
-          className="relative group bg-card p-6 rounded-lg border border-border cursor-pointer overflow-hidden"
+          className="relative group bg-card p-4 md:p-6 rounded-lg border border-border cursor-pointer overflow-hidden"
         >
           {/* Gradient glow on hover */}
           <motion.div
