@@ -8,75 +8,74 @@ import ArticleQuiz from "@/components/ArticleQuiz";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
 import BackToTop from "@/components/BackToTop";
 import FunFactToast from "@/components/FunFactToast";
-import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 
-// Map each article slug to a relevant Unsplash hero image
+// Map each article slug to relevant Wikimedia Commons / reliable images
 const articleImages: Record<string, { hero: string; sections: Record<number, string> }> = {
   "kerajaan-kutai": {
-    hero: "https://images.unsplash.com/photo-1565967511849-76a60a516170?w=1200&q=80", // Borneo river
+    hero: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=1200&q=80",
     sections: {
-      3: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=900&q=80", // ancient stone inscription
+      3: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=900&q=80",
     },
   },
   "kerajaan-sriwijaya": {
-    hero: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=1200&q=80", // temple ruins
+    hero: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1200&q=80",
     sections: {
-      1: "https://images.unsplash.com/photo-1568797629192-789acf8e4df3?w=900&q=80", // harbor/sea trade
+      1: "https://images.unsplash.com/photo-1568797629192-789acf8e4df3?w=900&q=80",
     },
   },
   "kerajaan-tarumanagara": {
-    hero: "https://images.unsplash.com/photo-1513415432598-4559c63b38a1?w=1200&q=80", // West Java nature
+    hero: "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=1200&q=80",
     sections: {
-      1: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=900&q=80", // stone artifact
+      1: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=900&q=80",
     },
   },
   "kerajaan-majapahit": {
-    hero: "https://images.unsplash.com/photo-1540360801766-6e10c6e1a3e3?w=1200&q=80", // Trowulan / East Java temple
+    hero: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1200&q=80",
     sections: {
-      1: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80", // temple complex
-      4: "https://images.unsplash.com/photo-1573790387438-4da905039392?w=900&q=80", // spice market
+      1: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80",
+      4: "https://images.unsplash.com/photo-1573790387438-4da905039392?w=900&q=80",
     },
   },
   "kesultanan-demak": {
-    hero: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80", // mosque architecture
+    hero: "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=1200&q=80",
     sections: {
-      2: "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=900&q=80", // Javanese wayang
+      2: "https://images.unsplash.com/photo-1585036156171-384164a8c357?w=900&q=80",
     },
   },
   "perlawanan-kolonialisme": {
-    hero: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80", // old colonial fort
+    hero: "https://images.unsplash.com/photo-1461360228754-6e81c478b882?w=1200&q=80",
     sections: {
-      1: "https://images.unsplash.com/photo-1590099033615-be195f8d575c?w=900&q=80", // spice plants
+      1: "https://images.unsplash.com/photo-1590099033615-be195f8d575c?w=900&q=80",
     },
   },
   "kebangkitan-nasional": {
-    hero: "https://images.unsplash.com/photo-1565967511849-76a60a516170?w=1200&q=80", // Jakarta historical
+    hero: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80",
     sections: {
-      2: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=900&q=80", // youth gathering / study
+      2: "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=900&q=80",
     },
   },
   "proklamasi-kemerdekaan": {
-    hero: "https://images.unsplash.com/photo-1530277453888-c78fb77a5e3d?w=1200&q=80", // Indonesian flag / red white
+    hero: "https://images.unsplash.com/photo-1530277453888-c78fb77a5e3d?w=1200&q=80",
     sections: {
-      2: "https://images.unsplash.com/photo-1568994526913-bc7ba70abc5a?w=900&q=80", // old typewriter
-      4: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&q=80", // crowd celebration
+      2: "https://images.unsplash.com/photo-1568994526913-bc7ba70abc5a?w=900&q=80",
+      4: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=900&q=80",
     },
   },
   "borobudur": {
-    hero: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80", // Borobudur at sunrise
+    hero: "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=1200&q=80",
     sections: {
-      1: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80", // temple architecture
-      2: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=900&q=80", // stone relief detail
+      1: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80",
+      2: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=900&q=80",
     },
   },
 };
 
 // Fallback image per era
 const eraFallback: Record<string, string> = {
-  "Hindu-Buddha": "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=1200&q=80",
-  "Kesultanan": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=1200&q=80",
-  "Kolonial": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+  "Hindu-Buddha": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1200&q=80",
+  "Kesultanan": "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=1200&q=80",
+  "Kolonial": "https://images.unsplash.com/photo-1461360228754-6e81c478b882?w=1200&q=80",
   "Pergerakan": "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=1200&q=80",
   "Kemerdekaan": "https://images.unsplash.com/photo-1530277453888-c78fb77a5e3d?w=1200&q=80",
 };
@@ -117,6 +116,23 @@ const ArticleImage = ({
   );
 };
 
+// Mini navbar for article pages - just logo
+const ArticleNavbar = () => (
+  <motion.nav
+    initial={{ y: -100 }}
+    animate={{ y: 0 }}
+    transition={{ duration: 0.6 }}
+    className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
+  >
+    <div className="max-w-6xl mx-auto px-6 flex items-center h-14">
+      <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <BookOpen className="w-5 h-5 text-primary" />
+        <span className="font-display font-bold text-lg text-foreground">SejarahKita</span>
+      </Link>
+    </div>
+  </motion.nav>
+);
+
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const article = getArticleBySlug(slug || "");
@@ -140,18 +156,18 @@ const ArticleDetail = () => {
   const quiz = getQuizBySlug(article.slug);
   const images = articleImages[article.slug];
   const heroSrc =
-    images?.hero || eraFallback[article.era] || "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=1200&q=80";
+    images?.hero || eraFallback[article.era] || "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Borobudur-Nothwest-view.jpg/1280px-Borobudur-Nothwest-view.jpg";
 
   return (
     <main className="min-h-screen bg-background">
-      <Navbar />
+      <ArticleNavbar />
 
       {/* ── Hero Image ───────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative h-72 md:h-96 w-full overflow-hidden mt-16"
+        className="relative h-72 md:h-96 w-full overflow-hidden mt-14"
       >
         <ArticleImage
           src={heroSrc}
@@ -263,7 +279,7 @@ const ArticleDetail = () => {
               viewport={{ once: true }}
             >
               <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent mb-10" />
-              <ArticleQuiz quiz={quiz} articleTitle={article.title} />
+              <ArticleQuiz key={article.slug} quiz={quiz} articleTitle={article.title} />
             </motion.div>
           </div>
         </section>
