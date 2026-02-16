@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, Clock, ChevronRight, ImageOff } from "lucide-react";
+import ArticleReader from "@/components/ArticleReader";
 import { useState } from "react";
 import { getArticleBySlug, getRelatedArticles } from "@/data/articles";
 import { getQuizBySlug } from "@/data/quizzes";
@@ -217,6 +218,11 @@ const ArticleDetail = () => {
 
             {/* Divider */}
             <div className="mt-8 h-px bg-gradient-to-r from-primary/40 via-border to-transparent" />
+
+            {/* Audio Reader */}
+            <div className="mt-6">
+              <ArticleReader sections={article.content} title={article.title} />
+            </div>
           </motion.div>
         </div>
       </section>
