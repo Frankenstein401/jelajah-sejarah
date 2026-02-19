@@ -109,8 +109,9 @@ const locations: MapLocation[] = [
     lng: 110.64,
     year: "Abad ke-15",
     era: "Kesultanan",
-    description: "Kesultanan Islam pertama di Pulau Jawa, didirikan oleh Raden Patah.",
-    articleSlug: "kesultanan-islam-nusantara",
+    description:
+      "Kesultanan Islam pertama di Pulau Jawa, didirikan oleh Raden Patah. Pusat penyebaran Islam dengan peran penting Wali Songo.",
+    articleSlug: "kesultanan-demak",
   },
   {
     id: "ternate",
@@ -193,8 +194,9 @@ const locations: MapLocation[] = [
     lng: 106.83,
     year: "1928",
     era: "Pergerakan",
-    description: "Ikrar satu tanah air, satu bangsa, dan satu bahasa: Indonesia.",
-    articleSlug: "sumpah-pemuda",
+    description:
+      "Kongres Pemuda II di Batavia menghasilkan ikrar satu tanah air, satu bangsa, dan satu bahasa: Indonesia.",
+    articleSlug: "kebangkitan-nasional",
   },
   {
     id: "proklamasi",

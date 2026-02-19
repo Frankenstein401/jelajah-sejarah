@@ -20,15 +20,15 @@ const eraColors: Record<string, string> = {
 
 // Unsplash thumbnails per slug
 const thumbs: Record<string, string> = {
-  "kerajaan-kutai": "https://images.unsplash.com/photo-1565967511849-76a60a516170?w=600&q=70",
-  "kerajaan-sriwijaya": "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=70",
-  "kerajaan-tarumanagara": "https://images.unsplash.com/photo-1513415432598-4559c63b38a1?w=600&q=70",
-  "kerajaan-majapahit": "https://images.unsplash.com/photo-1540360801766-6e10c6e1a3e3?w=600&q=70",
-  "kesultanan-demak": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=600&q=70",
-  "perlawanan-kolonialisme": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=70",
-  "kebangkitan-nasional": "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=600&q=70",
+  "kerajaan-kutai": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=600&q=70",
+  "kerajaan-sriwijaya": "https://images.unsplash.com/photo-1568797629192-789acf8e4df3?w=600&q=70",
+  "kerajaan-tarumanagara": "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=600&q=70",
+  "kerajaan-majapahit": "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=70",
+  "kesultanan-demak": "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=600&q=70",
+  "perlawanan-kolonialisme": "https://images.unsplash.com/photo-1461360228754-6e81c478b882?w=600&q=70",
+  "kebangkitan-nasional": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=70",
   "proklamasi-kemerdekaan": "https://images.unsplash.com/photo-1530277453888-c78fb77a5e3d?w=600&q=70",
-  "borobudur": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=600&q=70",
+  "borobudur": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600&q=70",
 };
 
 const eraFallback: Record<string, string> = {
