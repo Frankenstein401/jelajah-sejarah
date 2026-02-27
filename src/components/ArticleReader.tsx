@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, Pause, Play } from "lucide-react";
+import { Volume2, VolumeX, Pause, Play, SkipForward } from "lucide-react";
 
 interface ArticleReaderProps {
   sections: { heading: string; paragraphs: string[] }[];
@@ -10,6 +10,7 @@ interface ArticleReaderProps {
 const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
   const [isReading, setIsReading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [currentSection, setCurrentSection] = useState(0);
   const [supported, setSupported] = useState(true);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -17,6 +18,8 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     if (!("speechSynthesis" in window)) {
       setSupported(false);
     }
+    // Pre-load voices
+    window.speechSynthesis?.getVoices();
     return () => {
       window.speechSynthesis?.cancel();
     };
@@ -27,52 +30,67 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     window.speechSynthesis?.cancel();
     setIsReading(false);
     setIsPaused(false);
+    setCurrentSection(0);
   }, [title]);
 
-  const handleStart = useCallback(() => {
-    // Combine all sections into one text
-    const fullText = sections
-      .map((s) => `${s.heading}. ${s.paragraphs.join(". ")}`)
-      .join(". ");
+  const speakSection = useCallback(
+    (sectionIndex: number) => {
+      if (sectionIndex >= sections.length) {
+        setIsReading(false);
+        setIsPaused(false);
+        setCurrentSection(0);
+        return;
+      }
 
-    window.speechSynthesis.cancel();
+      const section = sections[sectionIndex];
+      const text = `${section.heading}. ${section.paragraphs.join(". ")}`;
 
-    const utterance = new SpeechSynthesisUtterance(fullText);
-    utterance.lang = "id-ID";
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
+      window.speechSynthesis.cancel();
 
-    utterance.onend = () => {
-      setIsReading(false);
-      setIsPaused(false);
-    };
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "id-ID";
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
 
-    utterance.onerror = () => {
-      setIsReading(false);
-      setIsPaused(false);
-    };
-
-    utteranceRef.current = utterance;
-
-    const doSpeak = () => {
+      // Pilih voice dengan fallback
       const voices = window.speechSynthesis.getVoices();
       const idVoice =
         voices.find((v) => v.lang.startsWith("id")) ||
-        voices.find((v) => v.lang.startsWith("ms"));
+        voices.find((v) => v.lang.startsWith("ms")) ||
+        voices[0];
       if (idVoice) utterance.voice = idVoice;
-      window.speechSynthesis.speak(utterance);
-    };
 
+      utterance.onend = () => {
+        const next = sectionIndex + 1;
+        if (next < sections.length) {
+          setCurrentSection(next);
+          speakSection(next);
+        } else {
+          setIsReading(false);
+          setIsPaused(false);
+          setCurrentSection(0);
+        }
+      };
+
+      utterance.onerror = (e) => {
+        if ((e as SpeechSynthesisErrorEvent).error === "interrupted") return;
+        setIsReading(false);
+        setIsPaused(false);
+        setCurrentSection(0);
+      };
+
+      utteranceRef.current = utterance;
+      setCurrentSection(sectionIndex);
+      window.speechSynthesis.speak(utterance);
+    },
+    [sections]
+  );
+
+  const handleStart = () => {
     setIsReading(true);
     setIsPaused(false);
-
-    // Chrome loads voices asynchronously — wait for voiceschanged if not yet ready
-    if (window.speechSynthesis.getVoices().length > 0) {
-      doSpeak();
-    } else {
-      window.speechSynthesis.addEventListener("voiceschanged", doSpeak, { once: true });
-    }
-  }, [sections]);
+    speakSection(0);
+  };
 
   const handlePause = () => {
     if (isPaused) {
@@ -88,6 +106,18 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     window.speechSynthesis.cancel();
     setIsReading(false);
     setIsPaused(false);
+    setCurrentSection(0);
+  };
+
+  const handleSkip = () => {
+    window.speechSynthesis.cancel();
+    const next = currentSection + 1;
+    if (next < sections.length) {
+      setCurrentSection(next);
+      speakSection(next);
+    } else {
+      handleStop();
+    }
   };
 
   if (!supported) return null;
@@ -119,7 +149,18 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
               onClick={handlePause}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+              {isPaused ? (
+                <Play className="w-3.5 h-3.5" />
+              ) : (
+                <Pause className="w-3.5 h-3.5" />
+              )}
+            </button>
+            <button
+              onClick={handleSkip}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-border text-muted-foreground transition-colors"
+              title="Bagian berikutnya"
+            >
+              <SkipForward className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={handleStop}
@@ -130,10 +171,10 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
             </button>
             <div className="ml-1">
               <p className="text-xs font-body text-muted-foreground">
-                {isPaused ? "Dijeda" : "Membacakan artikel..."}
+                {isPaused ? "Dijeda" : "Membacakan"}
               </p>
-              <p className="text-xs font-body text-foreground font-medium truncate max-w-[200px]">
-                {title}
+              <p className="text-xs font-body text-foreground font-medium truncate max-w-[180px]">
+                {sections[currentSection]?.heading}
               </p>
             </div>
           </motion.div>
@@ -142,5 +183,14 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     </div>
   );
 };
+
+// Test 1: Cek voices tersedia
+console.log("Voices:", speechSynthesis.getVoices().map(v => v.lang + " - " + v.name));
+
+// Test 2: Coba speak langsung
+const u = new SpeechSynthesisUtterance("Ini adalah tes suara");
+u.lang = "id-ID";
+speechSynthesis.speak(u);
+console.log("Speaking:", speechSynthesis.speaking);
 
 export default ArticleReader;

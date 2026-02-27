@@ -12,7 +12,6 @@ import FunFactToast from "@/components/FunFactToast";
 import FooterSection from "@/components/FooterSection";
 import ArticleDecoration from "@/components/ArticleDecoration";
 
-// Map each article slug to relevant Wikimedia Commons / reliable images
 const articleImages: Record<string, { hero: string; sections: Record<number, string> }> = {
   "kerajaan-kutai": {
     hero: "https://images.unsplash.com/photo-1565967511849-76a60a516170?w=1200&q=80",
