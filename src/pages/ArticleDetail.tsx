@@ -295,6 +295,9 @@ const ArticleDetail = () => {
         </section>
       )}
 
+      {/* ── Discussion Section ──────────────────────────────────────── */}
+      <ArticleDiscussion slug={article.slug} articleTitle={article.title} />
+
       {/* ── Related Articles ─────────────────────────────────────────── */}
       {related.length > 0 && (
         <section className="py-16 px-6 bg-card border-t border-border">
