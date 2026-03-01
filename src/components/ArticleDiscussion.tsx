@@ -121,12 +121,13 @@ const ArticleDiscussion = ({ slug, articleTitle }: ArticleDiscussionProps) => {
                   className="rounded-xl border border-border bg-card p-4"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <User className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <span className="font-body text-sm font-semibold text-foreground">
                       {c.name}
                     </span>
+                    <span className="text-[10px] text-muted-foreground font-body">•</span>
                     <span className="text-xs text-muted-foreground font-body ml-auto">
                       {formatTime(c.timestamp)}
                     </span>

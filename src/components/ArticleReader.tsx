@@ -11,15 +11,25 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
   const [isReading, setIsReading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [supported, setSupported] = useState(true);
+  const [voicesReady, setVoicesReady] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     if (!("speechSynthesis" in window)) {
       setSupported(false);
+      return;
     }
-    window.speechSynthesis?.getVoices();
+
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) setVoicesReady(true);
+    };
+
+    loadVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
     return () => {
-      window.speechSynthesis?.cancel();
+      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+      window.speechSynthesis.cancel();
     };
   }, []);
 
@@ -36,33 +46,37 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
 
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(fullText);
-    utterance.lang = "id-ID";
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
+    // Small delay to ensure cancel completes
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(fullText);
+      utterance.lang = "id-ID";
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
 
-    const voices = window.speechSynthesis.getVoices();
-    const idVoice =
-      voices.find((v) => v.lang.startsWith("id")) ||
-      voices.find((v) => v.lang.startsWith("ms")) ||
-      voices[0];
-    if (idVoice) utterance.voice = idVoice;
+      const voices = window.speechSynthesis.getVoices();
+      const idVoice =
+        voices.find((v) => v.lang.startsWith("id")) ||
+        voices.find((v) => v.lang.startsWith("ms")) ||
+        voices[0];
+      if (idVoice) utterance.voice = idVoice;
 
-    utterance.onend = () => {
-      setIsReading(false);
+      utterance.onend = () => {
+        setIsReading(false);
+        setIsPaused(false);
+      };
+
+      utterance.onerror = (e) => {
+        if ((e as SpeechSynthesisErrorEvent).error === "interrupted") return;
+        if ((e as SpeechSynthesisErrorEvent).error === "canceled") return;
+        setIsReading(false);
+        setIsPaused(false);
+      };
+
+      utteranceRef.current = utterance;
+      setIsReading(true);
       setIsPaused(false);
-    };
-
-    utterance.onerror = (e) => {
-      if ((e as SpeechSynthesisErrorEvent).error === "interrupted") return;
-      setIsReading(false);
-      setIsPaused(false);
-    };
-
-    utteranceRef.current = utterance;
-    setIsReading(true);
-    setIsPaused(false);
-    window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(utterance);
+    }, 100);
   }, [sections]);
 
   const handlePause = () => {
