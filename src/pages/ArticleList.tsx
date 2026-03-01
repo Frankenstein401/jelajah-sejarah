@@ -21,7 +21,7 @@ const eraColors: Record<string, string> = {
 // Unsplash thumbnails per slug
 const thumbs: Record<string, string> = {
   "kerajaan-kutai": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=600&q=70",
-  "kerajaan-sriwijaya": "https://images.unsplash.com/photo-1568797629192-789acf8e4df3?w=600&q=70",
+  "kerajaan-sriwijaya": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600&q=70",
   "kerajaan-tarumanagara": "https://images.unsplash.com/photo-1590069261209-f8e9b8642343?w=600&q=70",
   "kerajaan-majapahit": "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=70",
   "kesultanan-demak": "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=600&q=70",

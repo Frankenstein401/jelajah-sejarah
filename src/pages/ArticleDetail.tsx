@@ -20,7 +20,7 @@ const articleImages: Record<string, { hero: string; sections: Record<number, str
     },
   },
   "kerajaan-sriwijaya": {
-    hero: "https://images.unsplash.com/photo-1568797629192-789acf8e4df3?w=1200&q=80",
+    hero: "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=1200&q=80",
     sections: {
       1: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=900&q=80",
     },
@@ -57,7 +57,7 @@ const articleImages: Record<string, { hero: string; sections: Record<number, str
     },
   },
   "proklamasi-kemerdekaan": {
-    hero: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&q=80",
+    hero: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80",
     sections: {
       2: "https://images.unsplash.com/photo-1530277453888-c78fb77a5e3d?w=900&q=80",
       4: "https://images.unsplash.com/photo-1568994526913-bc7ba70abc5a?w=900&q=80",
