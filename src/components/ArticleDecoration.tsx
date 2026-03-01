@@ -1,6 +1,7 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
-// Era-specific SVG shapes (absolute-positioned within hero)
+// Era-specific SVG shapes
 const eraShapes: Record<string, { bg: React.ReactNode; accent: React.ReactNode }> = {
   "Hindu-Buddha": {
     bg: (
@@ -98,9 +99,23 @@ const eraShapes: Record<string, { bg: React.ReactNode; accent: React.ReactNode }
 
 interface ArticleDecorationProps {
   era: string;
+  containerRef?: React.RefObject<HTMLElement>;
 }
 
-const ArticleDecoration = ({ era }: ArticleDecorationProps) => {
+const ArticleDecoration = ({ era, containerRef }: ArticleDecorationProps) => {
+  const fallbackRef = useRef(null);
+  const targetRef = containerRef || fallbackRef;
+
+  const { scrollYProgress } = useScroll({
+    target: targetRef as React.RefObject<HTMLElement>,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-30%", "40%"]);
+  const accentY = useTransform(scrollYProgress, [0, 1], ["20%", "-30%"]);
+  const bgRotate = useTransform(scrollYProgress, [0, 1], [-3, 5]);
+  const bgScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1, 1.05]);
+
   const shapes = eraShapes[era] || eraShapes["Hindu-Buddha"];
 
   return (
@@ -110,23 +125,21 @@ const ArticleDecoration = ({ era }: ArticleDecorationProps) => {
         initial={{ opacity: 0, scale: 1.2, x: 30 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         transition={{ duration: 1.6, ease: "easeOut", delay: 0.2 }}
+        style={{ y: bgY, rotate: bgRotate, scale: bgScale }}
         className="absolute right-0 top-0 bottom-0 flex items-center pointer-events-none select-none z-[1]"
         aria-hidden="true"
       >
-        <motion.div
-          animate={{ rotate: [0, 1.5, -1.5, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-          className="w-52 h-52 md:w-72 md:h-72 text-white/[0.06]"
-        >
+        <div className="w-52 h-52 md:w-72 md:h-72 text-white/[0.06]">
           {shapes.bg}
-        </motion.div>
+        </div>
       </motion.div>
 
-      {/* Accent shape — floats bottom-left */}
+      {/* Accent shape — floats bottom-left with inverse parallax */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1.2, ease: "easeOut", delay: 0.5 }}
+        style={{ y: accentY }}
         className="absolute left-8 md:left-20 bottom-20 md:bottom-24 pointer-events-none select-none z-[1]"
         aria-hidden="true"
       >

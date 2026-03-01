@@ -11,6 +11,7 @@ import BackToTop from "@/components/BackToTop";
 import FunFactToast from "@/components/FunFactToast";
 import FooterSection from "@/components/FooterSection";
 import ArticleDecoration from "@/components/ArticleDecoration";
+import ArticleDiscussion from "@/components/ArticleDiscussion";
 
 const articleImages: Record<string, { hero: string; sections: Record<number, string> }> = {
   "kerajaan-kutai": {
@@ -293,6 +294,9 @@ const ArticleDetail = () => {
           </div>
         </section>
       )}
+
+      {/* ── Discussion Section ──────────────────────────────────────── */}
+      <ArticleDiscussion slug={article.slug} articleTitle={article.title} />
 
       {/* ── Related Articles ─────────────────────────────────────────── */}
       {related.length > 0 && (

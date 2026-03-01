@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, Pause, Play, SkipForward } from "lucide-react";
+import { Volume2, VolumeX, Pause, Play } from "lucide-react";
 
 interface ArticleReaderProps {
   sections: { heading: string; paragraphs: string[] }[];
@@ -10,7 +10,6 @@ interface ArticleReaderProps {
 const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
   const [isReading, setIsReading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
   const [supported, setSupported] = useState(true);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
@@ -18,79 +17,53 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     if (!("speechSynthesis" in window)) {
       setSupported(false);
     }
-    // Pre-load voices
     window.speechSynthesis?.getVoices();
     return () => {
       window.speechSynthesis?.cancel();
     };
   }, []);
 
-  // Reset on content change
   useEffect(() => {
     window.speechSynthesis?.cancel();
     setIsReading(false);
     setIsPaused(false);
-    setCurrentSection(0);
   }, [title]);
 
-  const speakSection = useCallback(
-    (sectionIndex: number) => {
-      if (sectionIndex >= sections.length) {
-        setIsReading(false);
-        setIsPaused(false);
-        setCurrentSection(0);
-        return;
-      }
+  const handleStart = useCallback(() => {
+    const fullText = sections
+      .map((s) => `${s.heading}. ${s.paragraphs.join(". ")}`)
+      .join(". ");
 
-      const section = sections[sectionIndex];
-      const text = `${section.heading}. ${section.paragraphs.join(". ")}`;
+    window.speechSynthesis.cancel();
 
-      window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    utterance.lang = "id-ID";
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "id-ID";
-      utterance.rate = 0.95;
-      utterance.pitch = 1;
+    const voices = window.speechSynthesis.getVoices();
+    const idVoice =
+      voices.find((v) => v.lang.startsWith("id")) ||
+      voices.find((v) => v.lang.startsWith("ms")) ||
+      voices[0];
+    if (idVoice) utterance.voice = idVoice;
 
-      // Pilih voice dengan fallback
-      const voices = window.speechSynthesis.getVoices();
-      const idVoice =
-        voices.find((v) => v.lang.startsWith("id")) ||
-        voices.find((v) => v.lang.startsWith("ms")) ||
-        voices[0];
-      if (idVoice) utterance.voice = idVoice;
+    utterance.onend = () => {
+      setIsReading(false);
+      setIsPaused(false);
+    };
 
-      utterance.onend = () => {
-        const next = sectionIndex + 1;
-        if (next < sections.length) {
-          setCurrentSection(next);
-          speakSection(next);
-        } else {
-          setIsReading(false);
-          setIsPaused(false);
-          setCurrentSection(0);
-        }
-      };
+    utterance.onerror = (e) => {
+      if ((e as SpeechSynthesisErrorEvent).error === "interrupted") return;
+      setIsReading(false);
+      setIsPaused(false);
+    };
 
-      utterance.onerror = (e) => {
-        if ((e as SpeechSynthesisErrorEvent).error === "interrupted") return;
-        setIsReading(false);
-        setIsPaused(false);
-        setCurrentSection(0);
-      };
-
-      utteranceRef.current = utterance;
-      setCurrentSection(sectionIndex);
-      window.speechSynthesis.speak(utterance);
-    },
-    [sections]
-  );
-
-  const handleStart = () => {
+    utteranceRef.current = utterance;
     setIsReading(true);
     setIsPaused(false);
-    speakSection(0);
-  };
+    window.speechSynthesis.speak(utterance);
+  }, [sections]);
 
   const handlePause = () => {
     if (isPaused) {
@@ -106,18 +79,6 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     window.speechSynthesis.cancel();
     setIsReading(false);
     setIsPaused(false);
-    setCurrentSection(0);
-  };
-
-  const handleSkip = () => {
-    window.speechSynthesis.cancel();
-    const next = currentSection + 1;
-    if (next < sections.length) {
-      setCurrentSection(next);
-      speakSection(next);
-    } else {
-      handleStop();
-    }
   };
 
   if (!supported) return null;
@@ -156,13 +117,6 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
               )}
             </button>
             <button
-              onClick={handleSkip}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-border text-muted-foreground transition-colors"
-              title="Bagian berikutnya"
-            >
-              <SkipForward className="w-3.5 h-3.5" />
-            </button>
-            <button
               onClick={handleStop}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-muted hover:bg-border text-muted-foreground transition-colors"
               title="Berhenti"
@@ -174,7 +128,7 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
                 {isPaused ? "Dijeda" : "Membacakan"}
               </p>
               <p className="text-xs font-body text-foreground font-medium truncate max-w-[180px]">
-                {sections[currentSection]?.heading}
+                {title}
               </p>
             </div>
           </motion.div>
@@ -183,14 +137,5 @@ const ArticleReader = ({ sections, title }: ArticleReaderProps) => {
     </div>
   );
 };
-
-// Test 1: Cek voices tersedia
-console.log("Voices:", speechSynthesis.getVoices().map(v => v.lang + " - " + v.name));
-
-// Test 2: Coba speak langsung
-const u = new SpeechSynthesisUtterance("Ini adalah tes suara");
-u.lang = "id-ID";
-speechSynthesis.speak(u);
-console.log("Speaking:", speechSynthesis.speaking);
 
 export default ArticleReader;
