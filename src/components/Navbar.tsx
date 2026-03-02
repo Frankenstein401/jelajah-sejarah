@@ -49,8 +49,8 @@ const Navbar = () => {
     { name: "Tentang", path: "/tentang" },
   ];
 
+  const isMobile = useIsMobile();
   // On mobile always show solid navbar; on desktop only when scrolled or non-home
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const showSolid = scrolled || !isHome || isMobile;
 
   return (
