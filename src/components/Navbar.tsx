@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -48,8 +49,9 @@ const Navbar = () => {
     { name: "Tentang", path: "/tentang" },
   ];
 
-  // On non-home pages or when scrolled, always show solid navbar
-  const showSolid = scrolled || !isHome;
+  const isMobile = useIsMobile();
+  // On mobile always show solid navbar; on desktop only when scrolled or non-home
+  const showSolid = scrolled || !isHome || isMobile;
 
   return (
     <motion.nav

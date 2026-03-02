@@ -43,29 +43,31 @@ const ArticleVideo = ({ videos }: ArticleVideoProps) => {
           Video Pembelajaran
         </h3>
 
-        {/* Main Player */}
+        {/* Main Player — responsive container that works for both landscape & portrait */}
         <div className="rounded-2xl overflow-hidden border border-border shadow-md bg-card">
-          <div className="relative aspect-video bg-black">
+          <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "70vh" }}>
             {playing ? (
-              <iframe
-                key={active.id}
-                src={`https://www.youtube-nocookie.com/embed/${active.id}?autoplay=1&rel=0&modestbranding=1`}
-                title={active.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 w-full h-full"
-              />
+              <div className="relative w-full aspect-video">
+                <iframe
+                  key={active.id}
+                  src={`https://www.youtube-nocookie.com/embed/${active.id}?autoplay=1&rel=0&modestbranding=1`}
+                  title={active.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </div>
             ) : (
               <button
                 onClick={() => setPlaying(true)}
-                className="group absolute inset-0 w-full h-full"
+                className="group relative w-full aspect-video"
                 aria-label={`Putar video: ${active.title}`}
               >
-                {/* YouTube maxres thumbnail, fallback ke hqdefault */}
+                {/* YouTube thumbnail — object-contain ensures full visibility */}
                 <img
                   src={`https://img.youtube.com/vi/${active.id}/maxresdefault.jpg`}
                   alt={active.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain bg-black"
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).src =
                       `https://img.youtube.com/vi/${active.id}/hqdefault.jpg`;
