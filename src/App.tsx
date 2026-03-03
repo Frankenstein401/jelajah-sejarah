@@ -11,6 +11,11 @@ import ArticleDetail from "./pages/ArticleDetail";
 import NotFound from "./pages/NotFound";
 import AboutPage from "./pages/AboutPage";
 import ScrollToTop from "./components/ScrollToTop";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminArticles from "./pages/admin/AdminArticles";
+import AdminQuizzes from "./pages/admin/AdminQuizzes";
+import AdminComments from "./pages/admin/AdminComments";
 
 const queryClient = new QueryClient();
 
@@ -29,8 +34,17 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/artikel" element={<ArticleList />} />
-              <Route path="/tentang" element={<AboutPage/>}/>
+              <Route path="/tentang" element={<AboutPage />} />
               <Route path="/artikel/:slug" element={<ArticleDetail />} />
+              
+              {/* Admin routes */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="articles" element={<AdminArticles />} />
+                <Route path="quizzes" element={<AdminQuizzes />} />
+                <Route path="comments" element={<AdminComments />} />
+              </Route>
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
