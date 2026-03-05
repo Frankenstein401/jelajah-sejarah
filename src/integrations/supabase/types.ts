@@ -14,7 +14,329 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      article_relations: {
+        Row: {
+          article_id: string
+          id: string
+          related_article_id: string
+        }
+        Insert: {
+          article_id: string
+          id?: string
+          related_article_id: string
+        }
+        Update: {
+          article_id?: string
+          id?: string
+          related_article_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_relations_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_relations_related_article_id_fkey"
+            columns: ["related_article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      article_sections: {
+        Row: {
+          article_id: string
+          heading: string
+          id: string
+          image_url: string | null
+          paragraphs: string[]
+          sort_order: number
+        }
+        Insert: {
+          article_id: string
+          heading: string
+          id?: string
+          image_url?: string | null
+          paragraphs?: string[]
+          sort_order?: number
+        }
+        Update: {
+          article_id?: string
+          heading?: string
+          id?: string
+          image_url?: string | null
+          paragraphs?: string[]
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_sections_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      article_videos: {
+        Row: {
+          article_id: string
+          channel: string | null
+          id: string
+          sort_order: number | null
+          title: string
+          youtube_id: string
+        }
+        Insert: {
+          article_id: string
+          channel?: string | null
+          id?: string
+          sort_order?: number | null
+          title: string
+          youtube_id: string
+        }
+        Update: {
+          article_id?: string
+          channel?: string | null
+          id?: string
+          sort_order?: number | null
+          title?: string
+          youtube_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_videos_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          created_at: string | null
+          era: string
+          hero_image: string | null
+          id: string
+          slug: string
+          summary: string
+          title: string
+          updated_at: string | null
+          year: string
+        }
+        Insert: {
+          created_at?: string | null
+          era: string
+          hero_image?: string | null
+          id?: string
+          slug: string
+          summary: string
+          title: string
+          updated_at?: string | null
+          year: string
+        }
+        Update: {
+          created_at?: string | null
+          era?: string
+          hero_image?: string | null
+          id?: string
+          slug?: string
+          summary?: string
+          title?: string
+          updated_at?: string | null
+          year?: string
+        }
+        Relationships: []
+      }
+      discussions: {
+        Row: {
+          article_id: string
+          created_at: string | null
+          id: string
+          message: string
+          name: string
+          parent_id: string | null
+        }
+        Insert: {
+          article_id: string
+          created_at?: string | null
+          id?: string
+          message: string
+          name: string
+          parent_id?: string | null
+        }
+        Update: {
+          article_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          name?: string
+          parent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discussions_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discussions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "discussions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      map_locations: {
+        Row: {
+          article_slug: string | null
+          description: string | null
+          era: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          year: string | null
+        }
+        Insert: {
+          article_slug?: string | null
+          description?: string | null
+          era?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          year?: string | null
+        }
+        Update: {
+          article_slug?: string | null
+          description?: string | null
+          era?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          year?: string | null
+        }
+        Relationships: []
+      }
+      quiz_questions: {
+        Row: {
+          correct_index: number
+          explanation: string | null
+          id: string
+          options: string[]
+          question: string
+          quiz_id: string
+          sort_order: number | null
+        }
+        Insert: {
+          correct_index: number
+          explanation?: string | null
+          id?: string
+          options: string[]
+          question: string
+          quiz_id: string
+          sort_order?: number | null
+        }
+        Update: {
+          correct_index?: number
+          explanation?: string | null
+          id?: string
+          options?: string[]
+          question?: string
+          quiz_id?: string
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          article_id: string
+          id: string
+          title: string
+        }
+        Insert: {
+          article_id: string
+          id?: string
+          title: string
+        }
+        Update: {
+          article_id?: string
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: true
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      timeline_events: {
+        Row: {
+          article_slug: string | null
+          description: string
+          detail: string | null
+          era: string | null
+          figures: string[] | null
+          id: string
+          image_caption: string | null
+          image_url: string | null
+          significance: string[] | null
+          sort_order: number | null
+          title: string
+          year: string
+        }
+        Insert: {
+          article_slug?: string | null
+          description: string
+          detail?: string | null
+          era?: string | null
+          figures?: string[] | null
+          id?: string
+          image_caption?: string | null
+          image_url?: string | null
+          significance?: string[] | null
+          sort_order?: number | null
+          title: string
+          year: string
+        }
+        Update: {
+          article_slug?: string | null
+          description?: string
+          detail?: string | null
+          era?: string | null
+          figures?: string[] | null
+          id?: string
+          image_caption?: string | null
+          image_url?: string | null
+          significance?: string[] | null
+          sort_order?: number | null
+          title?: string
+          year?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
