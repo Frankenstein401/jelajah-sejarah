@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, ChevronRight, Search, X } from "lucide-react";
+import { Clock, ChevronRight, Search, X, Loader2 } from "lucide-react";
 import { useState, useMemo } from "react";
-import { articles } from "@/data/articles";
+import { useArticles } from "@/hooks/useArticles";
 import Navbar from "@/components/Navbar";
 import FooterSection from "@/components/FooterSection";
 import BackToTop from "@/components/BackToTop";
@@ -18,7 +18,6 @@ const eraColors: Record<string, string> = {
   "Kemerdekaan": "bg-accent text-accent-foreground",
 };
 
-// Unsplash thumbnails per slug
 const thumbs: Record<string, string> = {
   "kerajaan-kutai": "https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=600&q=70",
   "kerajaan-sriwijaya": "https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?w=600&q=70",
@@ -42,6 +41,7 @@ const eraFallback: Record<string, string> = {
 const ArticleList = () => {
   const [activeEra, setActiveEra] = useState("Semua");
   const [query, setQuery] = useState("");
+  const { data: articles = [], isLoading } = useArticles();
 
   const filtered = useMemo(() => {
     return articles.filter((a) => {
@@ -53,34 +53,23 @@ const ArticleList = () => {
         a.era.toLowerCase().includes(query.toLowerCase());
       return matchEra && matchQuery;
     });
-  }, [activeEra, query]);
+  }, [activeEra, query, articles]);
 
   return (
     <main className="min-h-screen bg-background">
       <Navbar />
 
-      {/* ── Page Header ───────────────────────────────────────── */}
       <section className="pt-24 pb-10 px-6 bg-gradient-warm">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-primary font-body text-sm tracking-[0.2em] uppercase mb-3">
-              Perpustakaan Sejarah
-            </p>
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">
-              Semua Artikel
-            </h1>
+            <p className="text-primary font-body text-sm tracking-[0.2em] uppercase mb-3">Perpustakaan Sejarah</p>
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground">Semua Artikel</h1>
             <p className="text-muted-foreground font-body mt-4 max-w-xl mx-auto">
               Jelajahi koleksi lengkap materi sejarah Indonesia dari berbagai era
             </p>
           </motion.div>
 
-          {/* ── Search bar ──────────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="relative mt-8 max-w-md mx-auto"
-          >
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="relative mt-8 max-w-md mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
             <input
               type="text"
@@ -90,22 +79,13 @@ const ArticleList = () => {
               className="w-full pl-11 pr-10 py-3 rounded-xl bg-card border border-border text-foreground font-body text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
             />
             {query && (
-              <button
-                onClick={() => setQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button onClick={() => setQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </motion.div>
 
-          {/* ── Era filter pills ────────────────────────────── */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.22 }}
-            className="flex flex-wrap justify-center gap-2 mt-5"
-          >
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.22 }} className="flex flex-wrap justify-center gap-2 mt-5">
             {eras.map((era) => (
               <button
                 key={era}
@@ -123,111 +103,63 @@ const ArticleList = () => {
         </div>
       </section>
 
-      {/* ── Article Grid ───────────────────────────────────────── */}
       <section className="py-12 px-6">
         <div className="max-w-4xl mx-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground font-body text-sm">Memuat artikel...</span>
+            </div>
+          ) : (
+            <>
+              <motion.p layout className="text-xs text-muted-foreground font-body mb-6">
+                Menampilkan <span className="text-foreground font-semibold">{filtered.length}</span> artikel
+                {query && <> untuk "<span className="text-primary">{query}</span>"</>}
+                {activeEra !== "Semua" && <> era <span className="text-primary">{activeEra}</span></>}
+              </motion.p>
 
-          {/* Result count */}
-          <motion.p
-            layout
-            className="text-xs text-muted-foreground font-body mb-6"
-          >
-            Menampilkan <span className="text-foreground font-semibold">{filtered.length}</span> artikel
-            {query && <> untuk "<span className="text-primary">{query}</span>"</>}
-            {activeEra !== "Semua" && <> era <span className="text-primary">{activeEra}</span></>}
-          </motion.p>
-
-          {/* Empty state */}
-          <AnimatePresence mode="wait">
-            {filtered.length === 0 ? (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="text-center py-20"
-              >
-                <p className="text-5xl mb-4">🔍</p>
-                <p className="font-display text-xl font-semibold text-foreground">Artikel tidak ditemukan</p>
-                <p className="font-body text-sm text-muted-foreground mt-2">
-                  Coba kata kunci atau era yang berbeda
-                </p>
-                <button
-                  onClick={() => { setQuery(""); setActiveEra("Semua"); }}
-                  className="mt-4 text-sm text-primary font-body hover:underline"
-                >
-                  Reset filter →
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="grid"
-                className="grid grid-cols-1 md:grid-cols-2 gap-5"
-                layout
-              >
-                <AnimatePresence>
-                  {filtered.map((article, index) => {
-                    const imgSrc =
-                      thumbs[article.slug] ||
-                      eraFallback[article.era] || "";
-                    return (
-                      <motion.div
-                        key={article.slug}
-                        layout
-                        initial={{ opacity: 0, y: 20, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.35, delay: index * 0.04 }}
-                      >
-                        <Link
-                          to={`/artikel/${article.slug}`}
-                          className="group flex flex-col rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all overflow-hidden h-full"
-                        >
-                          {/* Thumbnail */}
-                          {imgSrc && (
-                            <div className="h-40 overflow-hidden">
-                              <img
-                                src={imgSrc}
-                                alt={article.title}
-                                onError={(e) => (e.currentTarget.style.display = "none")}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              />
-                            </div>
-                          )}
-
-                          {/* Content */}
-                          <div className="p-5 flex flex-col flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span
-                                className={`text-[10px] px-2 py-0.5 rounded-full font-body ${eraColors[article.era] || "bg-muted text-muted-foreground"}`}
-                              >
-                                {article.era}
-                              </span>
-                              <span className="flex items-center gap-1 text-muted-foreground text-xs font-body">
-                                <Clock className="w-3 h-3" />
-                                {article.year}
-                              </span>
-                            </div>
-
-                            <h3 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                              {article.title}
-                            </h3>
-                            <p className="text-muted-foreground font-body text-sm mt-2 leading-relaxed line-clamp-2 flex-1">
-                              {article.summary}
-                            </p>
-
-                            <span className="text-primary text-sm font-body mt-4 inline-flex items-center gap-1">
-                              Baca <ChevronRight className="w-3.5 h-3.5" />
-                            </span>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </AnimatePresence>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <AnimatePresence mode="wait">
+                {filtered.length === 0 ? (
+                  <motion.div key="empty" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-center py-20">
+                    <p className="text-5xl mb-4">🔍</p>
+                    <p className="font-display text-xl font-semibold text-foreground">Artikel tidak ditemukan</p>
+                    <p className="font-body text-sm text-muted-foreground mt-2">Coba kata kunci atau era yang berbeda</p>
+                    <button onClick={() => { setQuery(""); setActiveEra("Semua"); }} className="mt-4 text-sm text-primary font-body hover:underline">
+                      Reset filter →
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div key="grid" className="grid grid-cols-1 md:grid-cols-2 gap-5" layout>
+                    <AnimatePresence>
+                      {filtered.map((article, index) => {
+                        const imgSrc = thumbs[article.slug] || article.hero_image || eraFallback[article.era] || "";
+                        return (
+                          <motion.div key={article.slug} layout initial={{ opacity: 0, y: 20, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
+                            <Link to={`/artikel/${article.slug}`} className="group flex flex-col rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all overflow-hidden h-full">
+                              {imgSrc && (
+                                <div className="h-40 overflow-hidden">
+                                  <img src={imgSrc} alt={article.title} onError={(e) => (e.currentTarget.style.display = "none")} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                                </div>
+                              )}
+                              <div className="p-5 flex flex-col flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-body ${eraColors[article.era] || "bg-muted text-muted-foreground"}`}>{article.era}</span>
+                                  <span className="flex items-center gap-1 text-muted-foreground text-xs font-body"><Clock className="w-3 h-3" />{article.year}</span>
+                                </div>
+                                <h3 className="font-display text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{article.title}</h3>
+                                <p className="text-muted-foreground font-body text-sm mt-2 leading-relaxed line-clamp-2 flex-1">{article.summary}</p>
+                                <span className="text-primary text-sm font-body mt-4 inline-flex items-center gap-1">Baca <ChevronRight className="w-3.5 h-3.5" /></span>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
+          )}
         </div>
       </section>
 
